@@ -54,6 +54,9 @@ var (
 
 	ServiceAccountKeyNameRegex = "^" + ServiceAccountLinkRegexPrefix + "([^/]+)/keys/([^/]+)$"
 
+	// Service account resource name addressed by the account's email or unique ID.
+	ServiceAccountResourceNameRegex = "^" + ServiceAccountLinkRegexPrefix + "[^/]+$"
+
 	// Format of service accounts created through the API
 	CreatedServiceAccountNameRegex = fmt.Sprintf(RFC1035NameTemplate, "{4,28}") + "@" + ProjectNameInDNSFormRegex + "\\.iam\\.gserviceaccount\\.com$"
 

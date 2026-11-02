@@ -419,6 +419,24 @@ func TestValidateServiceAccountLinkFull(t *testing.T) {
 	}
 }
 
+func TestValidateServiceAccountResourceName(t *testing.T) {
+	cases := []StringValidationTestCase{
+		{TestName: "email", Value: "projects/my-project/serviceAccounts/svcacct@my-project.iam.gserviceaccount.com"},
+		{TestName: "unique id", Value: "projects/my-project/serviceAccounts/123456789012345678901"},
+		{TestName: "unique id with project wildcard", Value: "projects/-/serviceAccounts/123456789012345678901"},
+
+		{TestName: "bare email", Value: "svcacct@my-project.iam.gserviceaccount.com", ExpectError: true},
+		{TestName: "empty account", Value: "projects/my-project/serviceAccounts/", ExpectError: true},
+		{TestName: "traversal prefix", Value: "evil/projects/my-project/serviceAccounts/123456789012345678901", ExpectError: true},
+		{TestName: "trailing path segments", Value: "projects/my-project/serviceAccounts/123456789012345678901/keys/abc", ExpectError: true},
+	}
+
+	es := TestStringValidationCases(cases, ValidateRegexp(ServiceAccountResourceNameRegex))
+	if len(es) > 0 {
+		t.Errorf("Failed to validate service account resource names: %v", es)
+	}
+}
+
 func TestValidateServiceAccountKeyName(t *testing.T) {
 	cases := []StringValidationTestCase{
 		{TestName: "valid", Value: "projects/my-project/serviceAccounts/svcacct@my-project.iam.gserviceaccount.com/keys/abcd1234"},
